@@ -3,29 +3,14 @@ import { useTextTransform } from 'src/shared/composable/useTextTransform';
 import { useRouter } from 'vue-router';
  
   const router = useRouter()
-  const { toUpperCase, toTitleCase } = useTextTransform();
-  const props = defineProps({
-    title: {
-        type: String,
-        required: true
-      },
-  
-      caption: {
-        type: String,
-        default: ''
-      },
-  
-      link: {
-        type: String,
-        default: '#'
-      },
-  
-      icon: {
-        type: String,
-        default: ''
-      }
-
-  })
+  const { toTitleCase } = useTextTransform();
+  interface Props{
+    title:string,
+    caption:string,
+    link:string,
+    icon:string
+  }
+  const props = defineProps<Props>()
 
   const navigateTo = () => {
 
@@ -54,7 +39,7 @@ import { useRouter } from 'vue-router';
       </q-item-section>
   
       <q-item-section>
-        <q-item-label>{{ toUpperCase(title) }}</q-item-label>
+        <q-item-label>{{ toTitleCase(title) }}</q-item-label>
         <q-item-label caption>{{ caption }}</q-item-label>
       </q-item-section>
     </q-item>
