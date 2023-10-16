@@ -1,15 +1,15 @@
 export const linksList = [
     {
-      title: 'Docs',
-      caption: 'quasar.dev',
+      title: 'escribanos',
+      caption: 'modifica los datos de los escribanos',
       icon: 'las la-user-graduate',
-      link: 'https://quasar.dev'
+      link: 'escribanos'
     },
     {
-      title: 'Github',
-      caption: 'github.com/quasarframework',
-      icon: 'las la-server',
-      link: 'https://github.com/quasarframework'
+      title: 'menores',
+      caption: 'menores',
+      icon: 'las la-child',
+      link: 'menores'
     },
     {
       title: 'Discord Chat Channel',

@@ -1,3 +1,4 @@
+
 import { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
@@ -5,6 +6,32 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
+  },
+  {
+    path: '/escribanos',
+    component: () => import('layouts/MainLayout.vue'),
+    
+    children: [
+      {
+       path: '',
+       name:'escribanos',
+       component: () => import('pages/IndexPage2.vue') 
+      }
+    ],
+    
+  },
+  {
+    path: '/menores',
+    component: () => import('layouts/MainLayout.vue'),
+    
+    children: [
+      {
+       path: '',
+       name:'menores',
+       component: () => import('pages/IndexPage3.vue') 
+      }
+    ],
+    
   },
 
   // Always leave this as last one,

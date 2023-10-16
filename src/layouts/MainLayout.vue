@@ -63,7 +63,12 @@ const tituloSistema = "NOTARFOR"
           :class="`bg-${toolbarColor}-2`"
           class="text-dark"
         >
-          Seleccione una opción
+        
+        <div class="row justify-center items-center" >
+          <span class="text-weight-bold">Seleccione una opción</span>
+        </div>
+      
+          
         </q-item-label>
         
         <SideMenu
