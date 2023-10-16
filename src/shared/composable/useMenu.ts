@@ -1,16 +1,18 @@
-import { ref } from "vue"
+import { useMenuStore } from '../../stores/menu/menu';
+import { watch} from 'vue';
 
+export const useMenu = () => {
+    
+    const store = useMenuStore();
 
-export const useUI = () =>{
-    const leftDrawerOpen = ref(false)
+    const toggleLeftDrawer = () => {
+        store.setSideMenu();
+    }
 
+    const getLeftDrawerOpen = () => store.isSideMenuOpen;
 
     return {
-        
-        leftDrawerOpen,
-        toggleLeftDrawer: leftDrawerOpen.value = !leftDrawerOpen.value
-        
+        getLeftDrawerOpen,
+        toggleLeftDrawer
     }
 }
-
-export default useUI
