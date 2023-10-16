@@ -1,15 +1,13 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
 
+import useMenu from 'src/shared/composable/useMenu';
 import { linksList } from '../shared/components/menu/items-link';
 import SideMenu from 'src/shared/components/menu/SideMenu.vue';
 
-const leftDrawerOpen = ref(false)
-const tituloSistema = "NOTARFOR"
 
-const toggleLeftDrawer = () => {
-    leftDrawerOpen.value = !leftDrawerOpen.value
-}
+const tituloSistema = "NOTARFOR"
+const { toggleLeftDrawer, leftDrawerOpen } = useMenu()
+
 
 </script>
 
@@ -23,7 +21,7 @@ const toggleLeftDrawer = () => {
           round
           icon="menu"
           aria-label="Menu"
-          @click="toggleLeftDrawer"
+          @click="toggleLeftDrawer!"
         />
 
         <q-toolbar-title>
