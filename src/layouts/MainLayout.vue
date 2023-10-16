@@ -1,15 +1,15 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
-import EssentialLink from 'components/EssentialLink.vue';
+
 import { linksList } from '../shared/components/menu/items-link';
+import SideMenu from 'src/shared/components/menu/SideMenu.vue';
 
 const leftDrawerOpen = ref(false)
+const tituloSistema = "NOTARFOR"
 
 const toggleLeftDrawer = () => {
     leftDrawerOpen.value = !leftDrawerOpen.value
-  }
-
-  
+}
 
 </script>
 
@@ -27,10 +27,9 @@ const toggleLeftDrawer = () => {
         />
 
         <q-toolbar-title>
-          Quasar App
+          {{ tituloSistema }}
         </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
+        
       </q-toolbar>
     </q-header>
 
@@ -40,13 +39,14 @@ const toggleLeftDrawer = () => {
       bordered
     >
       <q-list>
+
         <q-item-label
           header
         >
-          Essential Links
+          Seleccione una opción
         </q-item-label>
-
-        <EssentialLink
+        
+        <SideMenu
           v-for="link in linksList"
           :key="link.title"
           v-bind="link"
