@@ -1,4 +1,5 @@
 
+import Login from 'src/pages/Login.vue';
 import { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
@@ -6,6 +7,10 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
+  },
+  {
+    path: '/login',
+    component: Login
   },
   {
     path: '/escribanos',
