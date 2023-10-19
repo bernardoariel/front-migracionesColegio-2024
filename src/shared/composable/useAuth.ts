@@ -1,22 +1,30 @@
 import { api,sanctum } from 'src/boot/axios';
+import { useAuthStore } from 'src/stores/auth/useAuthStore';
 import { ref } from 'vue';
 
-
 export default function useAuth() {
+
     const authUser = ref(null);
     const authToken = ref<string | null>(null); // Especifica el tipo aquí
 
+   const authStore = useAuthStore();
     const getToken = async () => {
         await sanctum.get('/sanctum/csrf-cookie');
     };
 
     const login = async (form: any) => {
+
         await getToken();
+
         try {
             const response = await api.post('/auth/login', form);
-            authToken.value = response.data.token;
-            authUser.value = response.data.data;
+            const authData = {
+              token: response.data.token,
+              user: response.data.data,
+            };
+            authStore.setAuthData(authData);
             return { success: true, data: response.data };
+
         } catch (error) {
            
             return { success: false, errors: ['Error desconocido'] };

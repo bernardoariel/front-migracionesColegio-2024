@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import useAuth from 'src/shared/composable/useAuth';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+import useAuth from 'src/shared/composable/useAuth';
 
 const { login } = useAuth();
 const router = useRouter();
-const email = ref('');
-const password = ref('');
+const email = ref('arielbernardo@hotmail.com');
+const password = ref('12345678');
 const showPassword = ref(false);
 
 const onSubmit = async () => {
@@ -29,7 +29,6 @@ const onSubmit = async () => {
     // Muestra errores si hay un problema en la solicitud
   }
 };
-
 
 </script>
 
