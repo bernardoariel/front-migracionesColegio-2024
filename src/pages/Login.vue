@@ -1,44 +1,36 @@
-<script lang="ts">
-import useAuth from 'src/stores/auth/useAuth';
+<script lang="ts" setup>
+import useAuth from 'src/shared/composable/useAuth';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-export default {
-  setup() {
-    const { login } = useAuth();
-    const router = useRouter();
-    const email = ref('');
-    const password = ref('');
-    const showPassword = ref(false);
 
-    const onSubmit = async () => {
-      try {
-        const form = {
-          email: email.value,
-          password: password.value,
-        };
+const { login } = useAuth();
+const router = useRouter();
+const email = ref('');
+const password = ref('');
+const showPassword = ref(false);
 
-        const result = await login(form);
-
-        if (result.success) {
-          router.push('/'); // Redirige a la página deseada después del inicio de sesión
-        } else {
-          // Muestra errores si es necesario
-        }
-      } catch (error) {
-        console.error('Error en el inicio de sesión:', error);
-        // Muestra errores si hay un problema en la solicitud
-      }
+const onSubmit = async () => {
+  try {
+    const form = {
+      email: email.value,
+      password: password.value,
     };
 
-    return {
-      email,
-      password,
-      showPassword,
-      onSubmit,
-    };
-  },
+    const result = await login(form);
+
+    if (result.success) {
+      router.push('/'); // Redirige a la página deseada después del inicio de sesión
+    } else {
+      // Muestra errores si es necesario
+    }
+  } catch (error) {
+    console.error('Error en el inicio de sesión:', error);
+    // Muestra errores si hay un problema en la solicitud
+  }
 };
+
+
 </script>
 
 <template>
