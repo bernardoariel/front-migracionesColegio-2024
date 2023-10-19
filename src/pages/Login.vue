@@ -1,15 +1,44 @@
-<script lang="ts" setup>
+<script lang="ts">
+import useAuth from 'src/stores/auth/useAuth';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-const email:string = ''
-const password:string = ''
-const showPassword = ref(false) // Para controlar la visibilidad de la contraseña
+export default {
+  setup() {
+    const { login } = useAuth();
+    const router = useRouter();
+    const email = ref('');
+    const password = ref('');
+    const showPassword = ref(false);
 
-const onSubmit = ()=> {
-  // Lógica para enviar el formulario
-    
-}
+    const onSubmit = async () => {
+      try {
+        const form = {
+          email: email.value,
+          password: password.value,
+        };
 
+        const result = await login(form);
+
+        if (result.success) {
+          router.push('/'); // Redirige a la página deseada después del inicio de sesión
+        } else {
+          // Muestra errores si es necesario
+        }
+      } catch (error) {
+        console.error('Error en el inicio de sesión:', error);
+        // Muestra errores si hay un problema en la solicitud
+      }
+    };
+
+    return {
+      email,
+      password,
+      showPassword,
+      onSubmit,
+    };
+  },
+};
 </script>
 
 <template>
@@ -17,7 +46,7 @@ const onSubmit = ()=> {
     <q-card class="my-card bg-dark text-white">
       <span class="text-h4 login-title">Login</span>
       <q-card-section>
-        <q-form @submit="onSubmit" class="q-gutter-md">
+        <q-form @submit.prevent="onSubmit" class="q-gutter-md">
           <q-input
             filled
             dark
