@@ -17,7 +17,7 @@ export const useAuthStore = defineStore('auth', () => {
     authData,
     getAuthData:computed(()=> authData.value),
     setAuthData(data: AuthData) {
-      console.log('data::: ', data);
+      localStorage.setItem('token', data.token)
       authData.value = data;
     },
     clearAuthData() {
