@@ -1,5 +1,8 @@
 <script lang="ts" setup>
+import { useAuthStore } from 'src/stores/auth/useAuthStore';
 import { useModeDark } from '../../composable/useModeDark';
+
+const { authData } = useAuthStore()
 const { isDark, toggleDarkMode, toolbarColor } = useModeDark();
 
 interface Props{
@@ -38,5 +41,6 @@ defineProps<Props>()
           aria-label="Menu" 
           @click="setToolbarColor('green')"
           /> -->
+          <q-badge>{{ authData?.user.name }}</q-badge>
       </q-toolbar>
 </template>
