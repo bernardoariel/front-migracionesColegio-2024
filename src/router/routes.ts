@@ -2,6 +2,7 @@
 import Login from 'src/pages/Login.vue';
 import { RouteRecordRaw } from 'vue-router';
 
+
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -46,5 +47,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import('pages/ErrorNotFound.vue'),
   },
 ];
+
+
+
 
 export default routes;
