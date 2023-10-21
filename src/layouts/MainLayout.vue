@@ -9,7 +9,7 @@ import NavBar from 'src/shared/components/menu/NavBar.vue';
   <q-layout view="lHh Lpr lFf">
    
     <NavBar />
-   
+    
     <q-page-container>
 
       <router-view />

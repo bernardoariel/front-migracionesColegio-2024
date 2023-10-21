@@ -58,5 +58,6 @@ const logout = async ()=>{
           aria-label="Menu" 
           @click="logout()"
           />
-      </q-toolbar>
+    </q-toolbar>
+    
 </template>
