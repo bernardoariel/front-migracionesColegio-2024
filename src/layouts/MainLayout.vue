@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import BreadCrums from 'src/shared/components/menu/BreadCrums.vue';
 import NavBar from 'src/shared/components/menu/NavBar.vue';
 
 
@@ -11,7 +12,7 @@ import NavBar from 'src/shared/components/menu/NavBar.vue';
     <NavBar />
     
     <q-page-container>
-
+      <BreadCrums/>
       <router-view />
 
     </q-page-container>
