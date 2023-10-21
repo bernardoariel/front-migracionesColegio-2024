@@ -6,27 +6,42 @@ import { RouteRecordRaw } from 'vue-router';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
+    redirect:'dashboard'
+    
   },
   {
-    path: '/login',
-    component: Login
+    path: '/dashboard',
+    component: () => import('layouts/MainLayout.vue'),
+    meta: { title: 'Escritorio',icon:'las la-tachometer-alt' },
   },
   {
     path: '/escribanos',
+    name: 'escribanos',
     component: () => import('layouts/MainLayout.vue'),
-    
+    meta: { title: 'Escribanos',icon:'las la-user-graduate' }, // Ruta principal
     children: [
       {
-       path: '',
-       name:'escribanos',
-       component: () => import('pages/IndexPage2.vue') 
-      }
+        path: '', // Ruta para el listado
+        name: 'escribanos-listado',
+        component: () => import('pages/FakePage.vue'),
+        meta: { title: 'Listado',icon:'las la-database' },
+      },
+      {
+        path: 'new', // Ruta para crear uno nuevo
+        name: 'escribano-new',
+        component: () => import('pages/FakePage.vue'),
+        meta: { title: 'Nuevo Escribano', icon:'las la-user-plus' },
+      },
+      {
+        path: 'edit/:id', // Ruta para editar
+        name: 'escribano-edit',
+        component: () => import('pages/FakePage.vue'),
+        meta: { title: 'Editar Escribano', icon:'las la-user-edit' },
+      },
     ],
-    
   },
-  {
+  
+ /*  {
     path: '/menores',
     component: () => import('layouts/MainLayout.vue'),
     
@@ -39,9 +54,11 @@ const routes: RouteRecordRaw[] = [
     ],
     
   },
-
-  // Always leave this as last one,
-  // but you can also remove it
+ */
+  {
+    path: '/login',
+    component: Login
+  },
   {
     path: '/:catchAll(.*)*',
     component: () => import('pages/ErrorNotFound.vue'),
