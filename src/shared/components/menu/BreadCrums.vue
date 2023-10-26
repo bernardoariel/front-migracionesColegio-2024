@@ -18,7 +18,7 @@
         <q-breadcrumbs-el
           :label="routeItem.label"
           :icon="routeItem.icon || 'las la-question'"
-          :to="routeItem.link"
+          :to="{ name: routeItem.name }"
         />
       </template>
     </q-breadcrumbs>
@@ -32,11 +32,13 @@ const route = useRoute();
 const breadcrumbsLinks = ref([]);
 
 const updateBreadcrumbs = async () => {
+
   // Utiliza una función asíncrona para esperar a que los breadcrumbs se actualicen
   await new Promise((resolve) => {
     breadcrumbsLinks.value = route.matched
       .filter((routeItem) => routeItem.meta && routeItem.meta.title)
       .map((routeItem) => {
+        console.log('routeItem::: ', routeItem);
         return {
           label: routeItem.meta.title,
           icon: routeItem.meta.icon || 'default-icon',
@@ -62,6 +64,7 @@ updateBreadcrumbs();
 
 <style scoped>
 .breadcrumbs-container {
+ margin-top:5px;
   margin-right: 20px; /* Ajusta el margen derecho según tu preferencia */
 }
 </style>

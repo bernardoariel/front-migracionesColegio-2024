@@ -17,13 +17,14 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/escribanos',
     name: 'escribanos',
+    redirect:'escribanos/listado',
     component: () => import('layouts/MainLayout.vue'),
     meta: { title: 'Escribanos',icon:'las la-user-graduate' }, // Ruta principal
     children: [
       {
-        path: '', // Ruta para el listado
+        path: 'listado', // Ruta para el listado
         name: 'escribanos-listado',
-        component: () => import('pages/FakePage.vue'),
+        component: () => import('pages/EscribanosPage.vue'),
         meta: { title: 'Listado',icon:'las la-database' },
       },
       {
@@ -41,7 +42,7 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   
- /*  {
+  {
     path: '/menores',
     component: () => import('layouts/MainLayout.vue'),
     
@@ -54,7 +55,7 @@ const routes: RouteRecordRaw[] = [
     ],
     
   },
- */
+
   {
     path: '/login',
     component: Login
