@@ -3,13 +3,13 @@ export const linksList = [
       title: 'escribanos',
       caption: 'modifica los datos de los escribanos',
       icon: 'las la-user-graduate',
-      link: 'escribanos'
+      link: '/escribanos/listado'
     },
     {
       title: 'menores',
       caption: 'menores',
       icon: 'las la-child',
-      link: 'menores'
+      link: '/menores'
     },
     {
       title: 'Discord Chat Channel',

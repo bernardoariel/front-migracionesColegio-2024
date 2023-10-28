@@ -1,9 +1,12 @@
 <script lang="ts" setup>
+import { useMenu } from 'src/shared/composable/useMenu';
 import { useTextTransform } from 'src/shared/composable/useTextTransform';
 import { useRouter } from 'vue-router';
  
   const router = useRouter()
   const { toTitleCase } = useTextTransform();
+  const { toggleLeftDrawer } = useMenu();
+
   interface Props{
     title:string,
     caption:string,
@@ -13,24 +16,24 @@ import { useRouter } from 'vue-router';
   const props = defineProps<Props>()
 
   const navigateTo = () => {
-
+    
     if (props.link.startsWith('http')) {
       window.open(props.link, '_blank');
       return;
     }
-    
-    router.push({ name: props.link });
-    
-  }
 
+    router.push({ path: `${props.link}` });
+    toggleLeftDrawer();
+  }
+ 
   </script>
   
 <template>
     <q-item
-      clickable
-      tag="a"
-      @click="navigateTo"
-    >
+  clickable
+
+  @click.stop="navigateTo"
+>
       <q-item-section
         v-if="icon"
         avatar

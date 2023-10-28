@@ -16,10 +16,11 @@
       />
       <template v-for="(routeItem, index) in breadcrumbsLinks" :key="index">
         <q-breadcrumbs-el
-          :label="routeItem.label"
-          :icon="routeItem.icon || 'las la-question'"
-          :to="{ name: routeItem.name }"
-        />
+            :label="routeItem.label"
+            :icon="routeItem.icon"
+            :to="routeItem.path"
+            @click="handleBreadcrumbClick(routeItem)"
+          />
       </template>
     </q-breadcrumbs>
   </div>
@@ -27,27 +28,47 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { linksList } from './items-link';
 
 const route = useRoute();
 const breadcrumbsLinks = ref([]);
 
-const updateBreadcrumbs = async () => {
-
-  // Utiliza una función asíncrona para esperar a que los breadcrumbs se actualicen
-  await new Promise((resolve) => {
-    breadcrumbsLinks.value = route.matched
-      .filter((routeItem) => routeItem.meta && routeItem.meta.title)
-      .map((routeItem) => {
-        console.log('routeItem::: ', routeItem);
-        return {
-          label: routeItem.meta.title,
-          icon: routeItem.meta.icon || 'default-icon',
-          link: routeItem.path,
-        };
-      });
-    resolve();
-  });
+const buildBreadcrumbs = (list, matchedRoute) => {
+  let breadcrumbs = [];
+  
+  try {
+    for (const item of list) {
+      if (item.link === matchedRoute.path) {
+        breadcrumbs.push({
+          label: item.title,
+          icon: item.icon,
+          path: item.link
+        });
+        break;
+      }
+      
+      if (item.children) {
+        const childBreadcrumbs = buildBreadcrumbs(item.children, matchedRoute);
+        if (childBreadcrumbs.length) {
+          breadcrumbs.push({
+            label: item.title,
+            icon: item.icon,
+            path: item.link
+          });
+          breadcrumbs = breadcrumbs.concat(childBreadcrumbs);
+          break;
+        }
+      }
+    }
+  } catch (error) {
+    // Aquí manejas el error, por ejemplo, imprimiendo un mensaje en la consola.
+    console.error("Error construyendo los breadcrumbs:", error);
+  }
+  
+  return breadcrumbs;
 };
+
+
 
 // Usa un watcher para detectar cambios en la ruta
 watch(
