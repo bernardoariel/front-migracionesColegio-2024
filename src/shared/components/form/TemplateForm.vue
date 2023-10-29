@@ -1,7 +1,7 @@
 <template>
   <q-form @submit="submitForm">
     <div class="row q-col-gutter-md">
-      <div v-for="(field, index) in formConfig.fields" :key="index">
+      <div v-for="(field, index) in formConfig.fields" :key="index" :class="`col-${12 / formConfig.columns * field.columnSpan}`">
         <component 
           :is="getDynamicComponent(field.type)" 
           v-bind="getFieldProps(field)" 
@@ -18,7 +18,7 @@ import { ref } from 'vue';
 
 // ... tu configuración formConfig y otros datos ...
 const formConfig = {
-  columns: 3,
+  columns: 4,
   fields: [
     {
       model: 'name',
