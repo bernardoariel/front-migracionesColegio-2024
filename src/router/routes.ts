@@ -22,26 +22,32 @@ const routes: RouteRecordRaw[] = [
     meta: { title: 'Escribanos',icon:'las la-user-graduate' }, // Ruta principal
     children: [
       {
-        path: 'listado', // Ruta para el listado
-        name: 'escribanos-listado',
+        path: '',
+        name: 'escribano-page',
         component: () => import('pages/EscribanosPage.vue'),
-        meta: { title: 'Listado',icon:'las la-database' },
-      },
-      {
-        path: 'new', // Ruta para crear uno nuevo
-        name: 'escribano-new',
-        component: () => import('pages/FakePage.vue'),
-        meta: { title: 'Nuevo Escribano', icon:'las la-user-plus' },
-      },
-      {
-        path: 'edit/:id', // Ruta para editar
-        name: 'escribano-edit',
-        component: () => import('pages/FakePage.vue'),
-        meta: { title: 'Editar Escribano', icon:'las la-user-edit' },
-      },
-    ],
+        children: [
+          {
+            path: 'listado', // Ruta para el listado
+            name: 'escribanos-listado',
+            component: () => import('src/modules/escribanos/components/ListadoEscribano.vue'),
+            meta: { title: 'Listado',icon:'las la-database' },
+          },
+          {
+            path: 'new', // Ruta para crear uno nuevo
+            name: 'escribano-new',
+            component: () => import('src/modules/escribanos/components/NewEscribano.vue'),
+            meta: { title: 'Nuevo Escribano', icon:'las la-user-plus' },
+          },
+          {
+            path: 'edit/:id', // Ruta para editar
+            name: 'escribano-edit',
+            component: () => import('pages/FakePage.vue'),
+            meta: { title: 'Editar Escribano', icon:'las la-user-edit' },
+          },
+        ],
+      }
+    ]
   },
-  
   {
     path: '/menores',
     component: () => import('layouts/MainLayout.vue'),

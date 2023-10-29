@@ -1,17 +1,25 @@
 <script lang="ts" setup>
+import { useModeDark } from 'src/shared/composable/useModeDark';
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router'
 
+const { isDark } = useModeDark();
+const localIsDark = ref(isDark.value);
 const route = useRoute()
 const activeLink = ref(route.name)
 
-type FormatFunction = (value: any) => string;
+console.log("Valor inicial de isDark:", isDark.value);
 
+watch(isDark, (newValue) => {
+    localIsDark.value = newValue;
+}, { deep: true });
 // Mira los cambios en la propiedad `name` de la ruta
 watch(() => route.name, (newVal) => {
   console.log('newVal::: ', newVal);
   activeLink.value = newVal;
 });
+
+
 </script>
 
 <template>
@@ -55,11 +63,12 @@ watch(() => route.name, (newVal) => {
 
     </div>
 
-    <div class="col-12 col-md-9 col-lg-9 q-card q-pa-md">
+    <div class="col-12 col-md-9 col-lg-9 q-card q-pa-md" :class="{'q-card--dark': localIsDark}">
       <!-- Contenido de la tarjeta -->
       <q-card-section>
         
         <router-view></router-view>    
+        
      
       </q-card-section>
 
@@ -76,10 +85,13 @@ watch(() => route.name, (newVal) => {
 
 .my-menu-link {
   color: #2C2C2C!important;
-   background: #F2C037 !important;
+  background: #F2C037 !important;
 }
+
 .disabled-item {
     cursor: not-allowed;
     opacity: 0.6;
 }
+
+
 </style>

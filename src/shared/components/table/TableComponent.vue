@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ref, defineProps, defineEmits } from 'vue';
 
 interface ColumnType {
   name: string;
@@ -23,6 +22,16 @@ const emits = defineEmits(["update:filter"]);
 const updateFilter = (value: any) => {
   emits('update:filter', value);
 };
+
+const editItem = (row: any) => {
+  console.log('Editar', row);
+  // Aquí puedes añadir la lógica para editar el elemento
+};
+
+const deleteItem = (row: any) => {
+  console.log('Eliminar', row);
+  // Aquí puedes añadir la lógica para eliminar el elemento
+};
 </script>
 
 <template>
@@ -35,16 +44,24 @@ const updateFilter = (value: any) => {
   >
     <template v-slot:top-right>
       <q-input 
-    dense 
-    debounce="300" 
-    :modelValue="props.filter" 
-    @update:modelValue="updateFilter" 
-    placeholder="Buscar"
->
+        dense 
+        debounce="300" 
+        :modelValue="props.filter" 
+        @update:modelValue="updateFilter" 
+        placeholder="Buscar"
+        >
         <template v-slot:append>
           <q-icon name="search" />
         </template>
       </q-input>
+    </template>
+    <template v-slot:body-cell-actions="props">
+      <q-td :props="props">
+        <!-- Botón para editar -->
+        <q-btn flat round icon="las la-edit" @click="editItem(props.row)" />
+        <!-- Botón para eliminar -->
+        <q-btn flat round icon="las la-trash" @click="deleteItem(props.row)" />
+      </q-td>
     </template>
   </q-table>
 </template>

@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useQuasar } from 'quasar';
 
 export function useModeDark() {
@@ -26,9 +26,6 @@ export function useModeDark() {
 
     const toggleDarkMode = () => {
         $q.dark.toggle();
-        isDark.value = $q.dark.isActive;
-        setInLocalStorage('colors', { modoDark: isDark.value, toolbar: toolbarColor.value });
-        console.log('Dark mode toggled:', isDark.value);
     };
 
     const setToolbarColor = (color: string) => {
@@ -36,7 +33,11 @@ export function useModeDark() {
         setInLocalStorage('colors', { modoDark: isDark.value, toolbar: toolbarColor.value });
         console.log('Toolbar color set to:', color);
     };
-
+    watch(() => $q.dark.isActive, (newVal) => {
+        isDark.value = newVal;
+        setInLocalStorage('colors', { modoDark: isDark.value, toolbar: toolbarColor.value });
+        console.log('Dark mode toggled by watcher:', isDark.value);
+    });
     return {
         isDark,
         toggleDarkMode,
