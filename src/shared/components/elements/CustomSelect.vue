@@ -1,8 +1,8 @@
 <template>
-  <q-input
+  <q-select
     v-model="localModelValue"
     :label="label"
-    :type="inputType || 'text'"
+    :options="options"
     :filled="filled"
     :required="required"
     :rules="rules"
@@ -14,7 +14,7 @@
 import { ref, watch } from 'vue';
 
 export default {
-  props: ['modelValue', 'label', 'inputType', 'filled', 'required', 'rules'],
+  props: ['modelValue', 'label', 'options', 'filled', 'required', 'rules'],
 
   setup(props, context) {
     const localModelValue = ref(props.modelValue);

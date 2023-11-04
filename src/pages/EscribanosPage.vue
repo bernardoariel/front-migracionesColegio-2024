@@ -27,7 +27,7 @@ watch(() => route.name, (newVal) => {
     
     <div class="col-12 col-md-2 col-lg-2">
       
-      <q-list bordered padding class="rounded-borders text-primary">
+      <q-list bordered padding class="rounded-borders text-primary custom-shadow">
 
         <!-- Enlace a Listado -->
         <router-link :to="{ name: 'escribanos-listado' }" class="my-custom-router-link">
@@ -93,5 +93,8 @@ watch(() => route.name, (newVal) => {
     opacity: 0.6;
 }
 
+.custom-shadow {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
 </style>

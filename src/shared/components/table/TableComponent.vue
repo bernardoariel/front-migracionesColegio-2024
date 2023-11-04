@@ -41,6 +41,8 @@ const deleteItem = (row: any) => {
     :columns="props.columns"
     row-key="name"
     :filter="props.filter"
+    :rows-per-page-options="[5, 10, 15, 30, 50, 100]"
+    rows-per-page-label="Registros por página"
   >
     <template v-slot:top-right>
       <q-input 
@@ -63,5 +65,6 @@ const deleteItem = (row: any) => {
         <q-btn flat round icon="las la-trash" @click="deleteItem(props.row)" />
       </q-td>
     </template>
+    
   </q-table>
 </template>

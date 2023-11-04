@@ -1,8 +1,9 @@
 import CustomInput from "./CustomInput.vue";
+import CustomSelect from "./CustomSelect.vue";
 
 const components = {
     input: CustomInput,
-    // select: MySelect,
+    select: CustomSelect,
     // toggle: MyToggle,
     // ... puedes agregar más componentes aquí
 };
