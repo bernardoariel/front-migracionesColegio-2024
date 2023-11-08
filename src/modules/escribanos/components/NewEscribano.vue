@@ -19,7 +19,7 @@ const formConfig = {
       columnSpan: 1,
       rules: [
         function(val) {
-          return !!val || `El ${this.label} es requerido`;
+          return !!val || `Este campo es requerido`;
         },
         (val) => val.length > 3 || 'Por favor, ingresa como minimo 3 caracteres'
       ]
@@ -33,7 +33,7 @@ const formConfig = {
       columnSpan: 1,
       rules: [
         function(val) {
-          return !!val || `El ${this.label} es requerido`;
+          return !!val || `Este campo es requerido`;
         },
         (val) => !isNaN(val) || 'Este campo debe ser numérico'
       ]
@@ -47,7 +47,7 @@ const formConfig = {
       columnSpan: 1,
       rules: [
         function(val) {
-          return !!val || `El ${this.label} es requerido`;
+          return !!val || `Este campo es requerido`;
         },
         (val) => val.length > 10 &&  val.length < 12 || 'Por favor, ingresa un cuit-cuil valido'
       ]
@@ -62,7 +62,7 @@ const formConfig = {
       columnSpan: 1,
       rules: [
         function(val) {
-          return !!val || `El ${this.label} es requerido. Elija una opcion`;
+          return !!val || `Este campo es requerido. Elija una opcion`;
         },
         
       ]
@@ -76,7 +76,7 @@ const formConfig = {
       columnSpan: 1,
       rules: [
         function(val) {
-          return !!val || `El ${this.label} es requerido`;
+          return !!val || `Este campo es requerido`;
         },
         (val) => val.length > 3 || 'Por favor, ingresa como minimo 3 caracteres'
       ]
@@ -90,7 +90,7 @@ const formConfig = {
       columnSpan: 1,
       rules: [
         function(val) {
-          return !!val || `El ${this.label} es requerido`;
+          return !!val || `Este campo es requerido`;
         },
         (val) => !isNaN(val) || 'Este campo debe ser numérico'
       ]
@@ -105,7 +105,7 @@ const formConfig = {
       columnSpan: 1,
       rules: [
         function(val) {
-          return !!val || `El ${this.label} es requerido`;
+          return !!val || `Este campo es requerido`;
         },
         (val, rules) => rules.email(val) || 'Por favor, introduce una dirección de email válida'
       ]

@@ -10,7 +10,7 @@
 
 
 const { configure } = require('quasar/wrappers');
-
+const { resolve } = require('path');
 
 module.exports = configure(function (/* ctx */) {
   return {
@@ -52,7 +52,14 @@ module.exports = configure(function (/* ctx */) {
         browser: [ 'es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1' ],
         node: 'node16'
       },
+      extendViteConf(viteConf) {
+        // Asegúrate de no sobrescribir alias existentes si los hay
+        viteConf.resolve = viteConf.resolve || {};
+        viteConf.resolve.alias = viteConf.resolve.alias || {};
 
+        // Agrega tu alias personalizado
+        viteConf.resolve.alias['@'] = resolve(__dirname, './src');
+      },
       vueRouterMode: 'history', // available values: 'hash', 'history'
       // vueRouterBase,
       // vueDevtools,
