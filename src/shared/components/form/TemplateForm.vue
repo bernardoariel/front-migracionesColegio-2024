@@ -30,11 +30,13 @@
 </template>
 <script>
 
-import { ref,defineComponent , inject } from 'vue';
+import { ref, defineComponent  } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { useValidation } from './composables/useValidation';
-import { useFormActions } from './composables/useFormActions';
+// Importa tus composables
+import useFieldRegistry from './composables/useFieldRegistry'; // nuevo composable para registrar campos
+import {useValidation} from './composables/useValidation';
+import {useFormActions} from './composables/useFormActions';
 
 import CustomInput from '../elements/CustomInput.vue';
 import CustomSelect from '../elements/CustomSelect.vue';
@@ -56,7 +58,9 @@ export default {
   setup(props) {
 
     const router = useRouter();
-    const formData = ref({
+    const formData = ref({}); // Puedes inicializar esto dinámicamente si es necesario
+    const formErrors = ref({});
+   /*  const formData = ref({
       name: '',
       register_number: '',
       cuil: '',
@@ -65,9 +69,23 @@ export default {
       telefono: '',
       email: ''
     });
+ */
+    // Separar la lógica de inicialización de formData en un composable
+    const { initializeFormData } = useFieldRegistry(props.formConfig); 
+    initializeFormData(formData);
 
-    const { formErrors, validate } = useValidation(ref(props.formConfig), formData);
+    // Usar composables para la validación y las acciones del formulario
+    const { validate } = useValidation(props.formConfig, formData);
     const { submitForm: actionSubmitForm, cancelForm } = useFormActions();
+
+    // La función submitForm solo maneja la lógica de envío
+    const submitForm = async () => {
+      if (validate()) {
+        await actionSubmitForm(formData.value);
+        // router.push({ name: 'next-route' });
+      }
+    };
+    
     // Componente dinámico basado en el tipo de campo
     const getDynamicComponent = (type) => {
       const componentsMap = {
@@ -78,17 +96,7 @@ export default {
       return componentsMap[type] || null; // devuelve null si el tipo no está mapeado
     };
 
-    const submitForm = async () => {
-      const isValid = validate();
-      if (isValid) {
-        // Aquí asumimos que la acción de submitForm es una promesa, por ejemplo, una solicitud AJAX
-        await actionSubmitForm(formData.value, props.formConfig);
-        // Puedes redirigir o limpiar el formulario si es necesario
-        // router.push({ name: 'next-route' });
-      } else {
-        console.log('Errores en el formulario:', formErrors.value);
-      }
-    };
+   
       // Define cómo manejar los clicks de los botones
     const handleButtonClick = (action) => {
       switch (action) {
