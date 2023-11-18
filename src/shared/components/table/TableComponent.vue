@@ -11,6 +11,7 @@ interface ColumnType {
 }
 
 interface Props {
+  title:string;
   rows: any[];
   columns: ColumnType[];
   filter: string;
@@ -36,7 +37,7 @@ const deleteItem = (row: any) => {
 
 <template>
   <q-table
-    title="Escribanos"
+    :title="props.title"
     :rows="props.rows"
     :columns="props.columns"
     row-key="name"
