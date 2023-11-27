@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import TableComponent from 'src/shared/components/table/TableComponent.vue';
-import { onMounted, ref } from 'vue';
-import { api } from 'src/boot/axios';
+import { ref } from 'vue';
+import useEscribanos from '../composables/useEscribanos';
+
+const { isFetching, isError, data: escribanos, error } = useEscribanos();
 
 type ColumnType = {
   name: string;
@@ -12,7 +14,6 @@ type ColumnType = {
   sortable?: boolean;
   format?: FormatFunction;
 };
-
 const filter = ref('')
 const rows = ref([]); 
 type FormatFunction = (value: any) => string;
@@ -42,21 +43,21 @@ const columns:ColumnType[] = [
 ]
 
 
-const fetchRows = async () => {
-  try {
-    const response = await api.get('/escribanos'); // Usa la URL correcta de tu backend
-    rows.value = response.data.escribanos; // Asume que el backend devuelve un array de objetos
-    
-    return { success: true, data: response.data };
-  } catch (error) {
-    console.error('Error al obtener los datos:', error);
-    return { success: false, errors: ['No se pudieron obtener los datos'] };
-  }
-};
-onMounted(fetchRows); 
-
 </script>
 
 <template>
-    <TableComponent title="Escribanos" :rows="rows" :columns="columns" :filter="filter" @update:filter="filter = $event" />
+  <div>
+    <div v-if="isFetching">Cargando...</div>
+    <div v-if="isError">Error: {{ error?.message }}</div>
+    <!-- Asegúrate de que escribanos.data exista y sea un array antes de pasarlo al componente de tabla -->
+    <TableComponent
+      v-if="escribanos"
+      title="Escribanos"
+      :rows="escribanos"
+      :columns="columns"
+      :filter="filter"
+      @update:filter="filter = $event"
+    />
+  
+  </div>
 </template>
