@@ -1,4 +1,10 @@
 <script lang="ts" setup>
+import { useRouter } from 'vue-router';
+import useDeleteEscribano from '../../../modules/escribanos/composables/useDeleteEscribano';
+
+
+const router = useRouter();
+const { deleteEscribano, error } = useDeleteEscribano();
 
 interface ColumnType {
   name: string;
@@ -18,20 +24,30 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const emits = defineEmits(["update:filter"]);
+const emits = defineEmits(["update:filter","escribanoDeleted"]);
 
 const updateFilter = (value: any) => {
   emits('update:filter', value);
 };
 
 const editItem = (row: any) => {
-  console.log('Editar', row);
-  // Aquí puedes añadir la lógica para editar el elemento
+  router.push({ name: 'escribano-edit',   params: { id: row.id } });
+  
 };
 
-const deleteItem = (row: any) => {
-  console.log('Eliminar', row);
-  // Aquí puedes añadir la lógica para eliminar el elemento
+const deleteItem = async (row: any) => {
+  // Confirmar antes de eliminar
+  if (confirm(`¿Estás seguro de que deseas eliminar el escribano con el ID ${row.id}?`)) {
+    await deleteEscribano(row.id);
+    if (error.value) {
+      // Manejo de errores, por ejemplo, mostrar un mensaje de error
+      console.error('Error al eliminar el escribano:', error.value);
+    } else {
+      // Actualiza la lista de escribanos aquí, si es necesario
+      // Por ejemplo, puedes emitir un evento para actualizar la lista en el componente padre
+      emits('escribanoDeleted', row.id);
+    }
+  }
 };
 </script>
 
@@ -42,7 +58,7 @@ const deleteItem = (row: any) => {
     :columns="props.columns"
     row-key="name"
     :filter="props.filter"
-    :rows-per-page-options="[5, 10, 15, 30, 50, 100]"
+    :rows-per-page-options="[10, 5, 15, 30, 50, 100]"
     rows-per-page-label="Registros por página"
   >
     <template v-slot:top-right>

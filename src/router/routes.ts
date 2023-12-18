@@ -45,7 +45,7 @@ const routes: RouteRecordRaw[] = [
           {
             path: 'edit/:id', // Ruta para editar
             name: 'escribano-edit',
-            component: () => import('pages/FakePage.vue'),
+            component: () => import('src/modules/escribanos/components/EditEscribano.vue'),
             meta: { title: 'Editar Escribano', icon:'las la-user-edit' },
           },
         ],

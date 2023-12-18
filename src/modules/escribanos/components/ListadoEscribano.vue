@@ -2,8 +2,9 @@
 import TableComponent from 'src/shared/components/table/TableComponent.vue';
 import { ref } from 'vue';
 import useEscribanos from '../composables/useEscribanos';
+import Escribano from '@/interfaces/Escribano.interface';
 
-const { isFetching, isError, data: escribanos, error } = useEscribanos();
+const { isLoading, isError, escribanos, error } = useEscribanos();
 
 type ColumnType = {
   name: string;
@@ -41,23 +42,29 @@ const columns:ColumnType[] = [
     sortable: false
   }
 ]
-
+const handleEscribanoDeleted = (id: number) => {
+  // Actualizar la lista local de escribanos eliminando el que coincida con el id
+  escribanos.value = escribanos.value.filter(escribano =>(escribano as Escribano).id !== id);
+  // Otra lógica como mostrar un mensaje de éxito, etc.
+};
 
 </script>
 
 <template>
   <div>
-    <div v-if="isFetching">Cargando...</div>
-    <div v-if="isError">Error: {{ error?.message }}</div>
-    <!-- Asegúrate de que escribanos.data exista y sea un array antes de pasarlo al componente de tabla -->
+    <div v-if="isLoading">Cargando...</div>
+   
     <TableComponent
-      v-if="escribanos"
+      v-else
       title="Escribanos"
       :rows="escribanos"
       :columns="columns"
       :filter="filter"
       @update:filter="filter = $event"
+      @escribanoDeleted="handleEscribanoDeleted"
     />
+    <div v-if="isError">Error: {{ error?.message }}</div>
+    <!-- Asegúrate de que escribanos.data exista y sea un array antes de pasarlo al componente de tabla -->
   
   </div>
 </template>

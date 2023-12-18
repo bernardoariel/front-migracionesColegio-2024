@@ -1,17 +1,11 @@
 <template>
-  <q-form @submit="submitForm">
+  <q-form @submit.prevent="submitForm">
     <div class="row q-col-gutter-md">
-    
       <div v-for="(field, index) in formConfig.fields" :key="index" :class="`col-${12 / formConfig.columns * field.columnSpan}`">
         <component 
-        :is="getDynamicComponent(field.type)" 
-        v-bind="getFieldProps(field)"
-        :key="field.model"
-        @update:modelValue="value => formData[field.model] = value"
-        :error-message="formErrors[field.model]"
-        :error="!!formErrors[field.model]"
+          :is="getDynamicComponent(field.type)" 
+          v-bind="getFieldProps(field)"
         />
-        
       </div>
     </div>
     <div class="row justify-end">
@@ -19,138 +13,120 @@
         v-for="(button, index) in formConfig.buttons"
         :key="index"
         :label="button.label"
-        :type="button.type"
+        :type="button.type === 'submit' ? 'submit' : 'button'"
         :color="button.color"
         @click="handleButtonClick(button.action)"
+        :disabled="isPending"
         unelevated
         class="q-ml-md"
       />
     </div>
+    <div v-if="isPending">Enviando...</div>
+    <div v-if="isError">Error: {{ error.message }}</div>
+    <div v-if="isSuccess">¡Escribano creado con éxito!</div>
   </q-form>
 </template>
+
 <script>
-
-import { ref, defineComponent  } from 'vue';
-import { useRouter } from 'vue-router';
-
-// Importa tus composables
-import useFieldRegistry from './composables/useFieldRegistry'; // nuevo composable para registrar campos
-import {useValidation} from './composables/useValidation';
-import {useFormActions} from './composables/useFormActions';
-
+import { ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import useFieldRegistry from './composables/useFieldRegistry';
+import { useValidation } from './composables/useValidation';
+import { useFormActions } from './composables/useFormActions';
+import useCreateEscribano from '../../../modules/escribanos/composables/useCreateEscribano';
 import CustomInput from '../elements/CustomInput.vue';
 import CustomSelect from '../elements/CustomSelect.vue';
-
+import useUpdateEscribano from '@/modules/escribanos/composables/useUpdateEscribano';
+import { useQueryClient } from '@tanstack/vue-query';
 
 export default {
-
   props: {
     formConfig: {
       type: Object,
       required: true
-    }
+    },
+    formDataProps: {
+      type: Object,
+      default: () => ({})
+    },
   },
   components: {
     CustomInput,
     CustomSelect
-    // cualquier otro componente que uses
   },
   setup(props) {
-
-    const router = useRouter();
-    const formData = ref({}); // Puedes inicializar esto dinámicamente si es necesario
+    const router= useRouter()
+    const route = useRoute()
+ 
+    /* const formData = ref(props.formDataProps ); */
+    const formData = ref(props.formDataProps || getDefaultFormData());
     const formErrors = ref({});
-   /*  const formData = ref({
-      name: '',
-      register_number: '',
-      cuil: '',
-      sexo: null,
-      direccion: '',
-      telefono: '',
-      email: ''
-    });
- */
-    // Separar la lógica de inicialización de formData en un composable
-    const { initializeFormData } = useFieldRegistry(props.formConfig); 
-    initializeFormData(formData);
 
-    // Usar composables para la validación y las acciones del formulario
     const { validate } = useValidation(props.formConfig, formData);
-    const { submitForm: actionSubmitForm, cancelForm } = useFormActions();
-
-    // La función submitForm solo maneja la lógica de envío
-    const submitForm = async () => {
-      if (validate()) {
-        await actionSubmitForm(formData.value);
-        // router.push({ name: 'next-route' });
-      }
-    };
+    const { actionSubmitForm, cancelForm } = useFormActions();
+    const queryClient = useQueryClient();
+    const { addEscribano, isPending, isError, error, isSuccess } = useCreateEscribano();
+    const { updateEscribano } = useUpdateEscribano();
     
-    // Componente dinámico basado en el tipo de campo
+    const submitForm = async () => {
+
+      if(route.path.includes('new')) {
+        
+        await  addEscribano(formData.value);
+       
+      } else{
+
+        await updateEscribano(formData.value);
+        
+      }
+      queryClient.invalidateQueries(['escribanos']);
+      router.push({name:'escribanos-listado'})
+
+    };
+
     const getDynamicComponent = (type) => {
       const componentsMap = {
         input: CustomInput,
         select: CustomSelect,
-        // otros mapeos para tus componentes
       };
-      return componentsMap[type] || null; // devuelve null si el tipo no está mapeado
+      return componentsMap[type] || null;
     };
 
-   
-      // Define cómo manejar los clicks de los botones
     const handleButtonClick = (action) => {
-      switch (action) {
-        case 'submit':
-          submitForm();
-          break;
-        case 'cancel':
-          cancelForm();
-          break;
-      }
+      console.log('action::: ', action);
+      
+      if (action !== 'submit') return cancelForm();
+      
+      submitForm();
+     
     };
-    // Función para obtener las propiedades de los campos dinámicamente
-    const getFieldProps = (field) => {
-      const commonProps = {
-        modelValue: formData.value[field.model],
-        label: field.label,
-        filled: field.filled,
-        required: field.required,
-        'onUpdate:modelValue': (value) => formData.value[field.model] = value, // Evento para actualizar el valor
-        // Aquí puedes agregar más propiedades comunes si son necesarias
-      };
 
-      // Aquí manejas las propiedades específicas de cada tipo de componente
-      switch (field.type) {
-        case 'input':
-          return {
-            ...commonProps,
-            // Otras propiedades específicas de los inputs, como 'type' si es necesario
-            type: field.inputType || 'text', // Ejemplo de manejo de tipo de input
-            rules: field.rules,
-          };
-        case 'select':
-          return {
-            ...commonProps,
-            // Otras propiedades específicas de los select
-            options: field.options,
-            rules: field.rules,
-          };
-        // Agrega aquí otros casos para otros tipos de campos si es necesario
-        default:
-          return commonProps; // Por defecto devolvemos las propiedades comunes
-      }
-    };
-    // ... Cualquier otra lógica de configuración ...
+    const getFieldProps = (field) => ({
+      modelValue: formData.value[field.model],
+      label: field.label,
+      filled: field.filled,
+      required: field.required,
+      'onUpdate:modelValue': (value) => { formData.value[field.model] = value; },
+      ...(field.type === 'select' ? { options: field.options } : {}),
+      ...(field.type === 'input' && field.inputType ? { type: field.inputType } : {}),
+    });
+
+    watch(() => props.formDataProps, (newVal) => {
+      formData.value = newVal;
+    }, { deep: true });
+
     return {
       formData,
       formErrors,
+      isPending,
+      isError,
+      error,
+      isSuccess,
       handleButtonClick,
       getDynamicComponent,
       submitForm,
       getFieldProps
-      // ... Cualquier otra propiedad o método que necesites exponer ...
     };
   }
 }
-
 </script>

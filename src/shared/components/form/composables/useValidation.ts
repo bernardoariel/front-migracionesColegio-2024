@@ -6,10 +6,20 @@ import { FormConfig } from '../interfaces/formConfig';
 import { FormData } from '../interfaces/formData';
 
 export function useValidation(formConfig: Ref<FormConfig>, formData: Ref<FormData>) {
+  
   const formErrors = ref<Record<string, string | null>>({});
 
   const validate = () => {
     // Asegúrate de que estás accediendo al objeto interno .value de las refs
+   /*  console.log('Validating with formConfig:', formConfig.value);
+     */
+    console.log('formConfig or formData is undefined');
+    console.log('formConfig::: ', formConfig);
+    console.log('And formData:', formData);
+    if (!formConfig || !formData) {
+      console.error('formConfig or formData is undefined');
+      return false;
+    }
     const results = validateForm(formData.value, formConfig.value);
     formErrors.value = results.errors;
     
