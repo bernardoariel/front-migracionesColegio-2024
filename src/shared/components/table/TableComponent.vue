@@ -1,7 +1,7 @@
 <script lang="ts" setup>
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
-import useDeleteEscribano from '../../../modules/escribanos/composables/useDeleteEscribano';
-
+import useDeleteEscribano from 'src/modules/escribanos/composables/useDeleteEscribano';
 
 const router = useRouter();
 const { deleteEscribano, error } = useDeleteEscribano();
@@ -13,48 +13,52 @@ interface ColumnType {
   required?: boolean;
   align?: "left" | "right" | "center";
   sortable?: boolean;
-  // ... otras propiedades que puedas necesitar
+  format?: (val: any) => string;
 }
 
 interface Props {
-  title:string;
+  title: string;
   rows: any[];
   columns: ColumnType[];
   filter: string;
+  deleteEntity: (id: number) => void; // Función para eliminar, pasada como prop
 }
 
 const props = defineProps<Props>();
-const emits = defineEmits(["update:filter","escribanoDeleted"]);
+const emits = defineEmits(["update:filter", "escribanoDeleted"]);
+
+// Asumiendo que cada fila tiene una propiedad 'nombre' para el filtrado
+const filteredRows = computed(() => {
+  return props.rows.filter(row => row.nombre.toLowerCase().includes(props.filter.toLowerCase()));
+});
 
 const updateFilter = (value: any) => {
   emits('update:filter', value);
 };
 
-const editItem = (row: any) => {
-  router.push({ name: 'escribano-edit',   params: { id: row.id } });
-  
-};
-
-const deleteItem = async (row: any) => {
-  // Confirmar antes de eliminar
-  if (confirm(`¿Estás seguro de que deseas eliminar el escribano con el ID ${row.id}?`)) {
-    await deleteEscribano(row.id);
+const handleDelete = async (id: number) => {
+  // Confirmación de la acción
+  if (confirm(`¿Estás seguro de que deseas eliminar el escribano con ID ${id}?`)) {
+    await deleteEscribano(id);
     if (error.value) {
-      // Manejo de errores, por ejemplo, mostrar un mensaje de error
-      console.error('Error al eliminar el escribano:', error.value);
+      alert('Hubo un error al eliminar el escribano.');
     } else {
-      // Actualiza la lista de escribanos aquí, si es necesario
-      // Por ejemplo, puedes emitir un evento para actualizar la lista en el componente padre
-      emits('escribanoDeleted', row.id);
+      emits('escribanoDeleted', id);
+      // Opcional: actualizar la lista de escribanos en el padre o manejarlo a través de un watcher en el padre
     }
   }
+};
+
+// Función para manejar la edición de un escribano
+const handleEdit = (id: number) => {
+  router.push({ name: 'escribano-edit', params: { id } });
 };
 </script>
 
 <template>
-  <q-table
+ <q-table
     :title="props.title"
-    :rows="props.rows"
+    :rows="filteredRows"
     :columns="props.columns"
     row-key="name"
     :filter="props.filter"
@@ -64,24 +68,20 @@ const deleteItem = async (row: any) => {
     <template v-slot:top-right>
       <q-input 
         dense 
-        debounce="300" 
-        :modelValue="props.filter" 
-        @update:modelValue="updateFilter" 
+        v-model="props.filter"
+        @update:modelValue="updateFilter"
         placeholder="Buscar"
-        >
+      >
         <template v-slot:append>
           <q-icon name="search" />
         </template>
       </q-input>
     </template>
-    <template v-slot:body-cell-actions="props">
-      <q-td :props="props">
-        <!-- Botón para editar -->
-        <q-btn flat round icon="las la-edit" @click="editItem(props.row)" />
-        <!-- Botón para eliminar -->
-        <q-btn flat round icon="las la-trash" @click="deleteItem(props.row)" />
+    <template v-slot:body-cell-actions="cellProps">
+      <q-td :props="cellProps">
+        <q-btn flat round icon="edit" @click="handleEdit(cellProps.row.id)" />
+        <q-btn flat round icon="delete" @click="handleDelete(cellProps.row.id)" />
       </q-td>
     </template>
-    
   </q-table>
 </template>

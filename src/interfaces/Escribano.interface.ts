@@ -29,3 +29,7 @@ export type EscribanoFormData = {
   dni: string;
   condicion_id:number;
 };
+export interface EscribanosResponse {
+  escribanos: Escribano[];
+}
+

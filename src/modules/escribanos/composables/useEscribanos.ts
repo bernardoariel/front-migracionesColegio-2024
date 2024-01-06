@@ -1,17 +1,18 @@
-import { useQuery } from '@tanstack/vue-query';
 import { api } from '@/boot/axios';
+import { watch, computed } from 'vue';
+import { useQuery } from '@tanstack/vue-query';
+
 import { useEscribanosStore } from '../store/escribanos';
 import { storeToRefs } from 'pinia';
-import { watch } from 'vue';
 
+import { EscribanosResponse } from '../../../interfaces/Escribano.interface';
+import Escribano from '../../../interfaces/Escribano.interface';
 
-
-const getEscribanos = async () => {
-  const response  = await api.get('/escribanos');
-  console.log("Datos recibidos:", response.data.escribanos);
-  
-  return response.data.escribanos;// Suponiendo que los escribanos están directamente en response.data
+const getEscribanos = async (): Promise<Escribano[]> => {
+  const { data }  = await api.get<EscribanosResponse>('/escribanos');
+  return data.escribanos;
 };
+
 const useEscribanos = () =>{
   
   const store = useEscribanosStore();
@@ -20,7 +21,6 @@ const useEscribanos = () =>{
   const { isLoading, isError, data, error } = useQuery({
       queryKey: ['escribanos'],
       queryFn: getEscribanos,
-      staleTime: 100,
       
   });
 
@@ -30,10 +30,12 @@ const useEscribanos = () =>{
   })
 
   return {
-    isLoading, // true mientras la petición está en progreso
-    isError,    // true si la petición falló
-    escribanos,       // los datos obtenidos o undefined si la petición no ha sido completada o falló
+    isLoading,
+    isError,   
+    escribanos,     
     error,
+
+    count: computed(()=> escribanos.value?.length ?? 0)
   }
   
 }
